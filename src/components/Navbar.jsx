@@ -19,7 +19,7 @@ import { TypeAnimation } from "react-type-animation";
 // Animation Variants
 const fadeIn = {
   hidden: { opacity: 0, y: -20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.8 } },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } },
 };
 
 // Navigation Links
@@ -31,7 +31,7 @@ const navLinks = [
   { name: "Contact", tab: "contact" },
 ];
 
-const Navbar = () => {
+const Navbar = ({ activeSection }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
@@ -41,24 +41,30 @@ const Navbar = () => {
         top="0"
         width="100%"
         zIndex="1000"
-        px={{ base: 4, md: 6 }}
-        py={3}
-        backdropFilter="blur(10px)"
-        bg="#F8E1A1" // Warm Light Gold - Complementary to Dark Sections
-        color="black"
-        boxShadow="0px 4px 12px rgba(0, 0, 0, 0.3)"
+        px={{ base: 4, md: 8 }}
+        py={4}
+        backdropFilter="blur(12px)"
+        bg="rgba(2, 26, 43, 0.9)" // Matches App's dark gradient background
+        borderBottom="1px solid rgba(255, 255, 255, 0.2)"
+        boxShadow="0 8px 32px rgba(0, 0, 0, 0.3)"
       >
         <Flex justify="space-between" align="center">
           {/* Animated Logo */}
-          <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
-            <Text fontSize={{ base: "lg", md: "xl" }} fontWeight="bold" color="black">
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+            <Text
+              fontSize={{ base: "xl", md: "2xl" }}
+              fontWeight="extrabold"
+              bg="linear-gradient(90deg, #00e667, #0087e6)" // Matches App's gradient
+              bgClip="text"
+              textShadow="0 0 10px rgba(0, 230, 103, 0.5)" // Matches App's glow
+            >
               <TypeAnimation
                 sequence={[
                   "Full Stack Developer",
                   2000,
-                  "Innovating with AI",
+                  "AI Innovator",
                   2000,
-                  "Transforming Ideas",
+                  "Tech Visionary",
                   2000,
                 ]}
                 wrapper="span"
@@ -69,15 +75,31 @@ const Navbar = () => {
           </motion.div>
 
           {/* Desktop Navigation */}
-          <HStack spacing={6} display={{ base: "none", md: "flex" }}>
+          <HStack spacing={8} display={{ base: "none", md: "flex" }}>
             {navLinks.map((link) => (
-              <motion.div key={link.tab} whileHover={{ scale: 1.1 }}>
-                <ScrollLink to={link.tab} spy smooth offset={-70} duration={500}>
+              <motion.div
+                key={link.tab}
+                whileHover={{ scale: 1.1, y: -2 }}
+                whileTap={{ scale: 0.9 }}
+              >
+                <ScrollLink
+                  to={link.tab}
+                  spy
+                  smooth
+                  offset={-80}
+                  duration={500}
+                  className="nav-link"
+                >
                   <Text
-                    color="black"
                     fontSize="lg"
-                    fontWeight="medium"
-                    _hover={{ color: "#E07A5F", cursor: "pointer" }} // Warm Orange Hover
+                    fontWeight="semibold"
+                    color={activeSection === link.tab ? "#00cdbb" : "whiteAlpha.900"} // Matches App's teal accent
+                    _hover={{
+                      bg: "linear-gradient(90deg, #00e667, #0087e6)", // Matches App's gradient
+                      bgClip: "text",
+                      textShadow: "0 0 10px rgba(0, 230, 103, 0.5)", // Matches App's glow
+                    }}
+                    transition="all 0.3s ease"
                   >
                     {link.name}
                   </Text>
@@ -91,33 +113,71 @@ const Navbar = () => {
             display={{ base: "flex", md: "none" }}
             aria-label="Toggle Menu"
             icon={<FaBars />}
-            color="black"
-            variant="ghost"
+            color="whiteAlpha.900"
+            bg="rgba(255, 255, 255, 0.1)" // Matches App's glassmorphism
+            border="1px solid rgba(255, 255, 255, 0.2)"
+            borderRadius="full"
+            _hover={{
+              bg: "linear-gradient(45deg, #00e667, #0087e6)", // Matches App's gradient
+              color: "white",
+              boxShadow: "0 0 15px rgba(0, 230, 103, 0.5)", // Matches App's glow
+            }}
             onClick={onOpen}
           />
         </Flex>
 
         {/* Mobile Navigation Drawer */}
         <Drawer placement="right" onClose={onClose} isOpen={isOpen}>
-          <DrawerOverlay />
+          <DrawerOverlay bg="rgba(2, 26, 43, 0.8)" backdropFilter="blur(4px)" />
           <DrawerContent
-            bg="linear-gradient(135deg, #F8E1A1, #E07A5F)" // Gradient with Warm Gold & Orange
+            bg="linear-gradient(135deg, rgba(2, 26, 43, 0.9), rgba(10, 61, 64, 0.9))" // Matches App's gradient background
+            backdropFilter="blur(12px)"
+            borderLeft="1px solid rgba(255, 255, 255, 0.2)"
+            boxShadow="0 8px 32px rgba(0, 0, 0, 0.4)"
             p={4}
-            boxShadow="0px 0px 15px rgba(255, 165, 0, 0.4)"
           >
             <DrawerBody>
               <Flex justify="flex-end">
-                <IconButton icon={<FaTimes />} color="black" variant="ghost" onClick={onClose} />
+                <IconButton
+                  icon={<FaTimes />}
+                  color="whiteAlpha.900"
+                  bg="rgba(255, 255, 255, 0.1)" // Matches App's glassmorphism
+                  border="1px solid rgba(255, 255, 255, 0.2)"
+                  borderRadius="full"
+                  _hover={{
+                    bg: "linear-gradient(45deg, #00e667, #0087e6)", // Matches App's gradient
+                    color: "white",
+                    boxShadow: "0 0 15px rgba(0, 230, 103, 0.5)", // Matches App's glow
+                  }}
+                  onClick={onClose}
+                />
               </Flex>
-              <VStack spacing={6} mt={10} align="center">
+              <VStack spacing={8} mt={12} align="center">
                 {navLinks.map((link) => (
-                  <motion.div key={link.tab} whileHover={{ scale: 1.1 }}>
-                    <ScrollLink to={link.tab} spy smooth offset={-70} duration={500} onClick={onClose}>
+                  <motion.div
+                    key={link.tab}
+                    whileHover={{ scale: 1.1, x: 5 }}
+                    whileTap={{ scale: 0.9 }}
+                  >
+                    <ScrollLink
+                      to={link.tab}
+                      spy
+                      smooth
+                      offset={-80}
+                      duration={500}
+                      onClick={onClose}
+                      className="nav-link"
+                    >
                       <Text
-                        color="black"
-                        fontSize="xl"
+                        fontSize="2xl"
                         fontWeight="bold"
-                        _hover={{ color: "#E07A5F", cursor: "pointer" }} // Warm Orange Hover
+                        color={activeSection === link.tab ? "#00cdbb" : "whiteAlpha.900"} // Matches App's teal accent
+                        _hover={{
+                          bg: "linear-gradient(90deg, #00e667, #0087e6)", // Matches App's gradient
+                          bgClip: "text",
+                          textShadow: "0 0 10px rgba(0, 230, 103, 0.5)", // Matches App's glow
+                        }}
+                        transition="all 0.3s ease"
                       >
                         {link.name}
                       </Text>
